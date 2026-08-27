@@ -3,10 +3,10 @@ name: Publish Magazzino ClientHttp to GitHub Packages
 on:
   push:
     branches: [ "main", "master" ]
-    # L'azione parte solo se modifichi qualcosa nel ClientHttp
+  
     paths:
       - 'microservizi/Unipr.Magazzino/Unipr.Magazzino.ClientHttp/**'
-  workflow_dispatch: # Questo ti permette di avviare l'azione anche a mano dal sito di GitHub!
+  workflow_dispatch: #permette di avviare l'azione anche a mano dal sito di GitHub
 
 jobs:
   build-and-publish:
@@ -22,11 +22,14 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x' # Usa la versione di .NET del tuo progetto
+        dotnet-version: '9.0.x'
 
-    - name: Costruisci e Crea Pacchetto
-      run: dotnet pack microservizi/Unipr.Magazzino/Unipr.Magazzino.ClientHttp/Unipr.Magazzino.ClientHttp.csproj -c Release -o out
+    - name: Costruisci il progetto (Build)
+      run: dotnet build microservizi/Unipr.Magazzino/Unipr.Magazzino.ClientHttp/Unipr.Magazzino.ClientHttp.csproj -c Release
+
+    - name: Crea Pacchetto (Pack)
+      run: dotnet pack microservizi/Unipr.Magazzino/Unipr.Magazzino.ClientHttp/Unipr.Magazzino.ClientHttp.csproj -c Release --no-build -o out
 
     - name: Pubblica su GitHub Packages
-      # Qui GitHub usa un token segreto automatico per caricare il pacchetto sul tuo profilo
+      #GitHub usa un token segreto automatico per caricare il pacchetto sul profilo
       run: dotnet nuget push "out/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
