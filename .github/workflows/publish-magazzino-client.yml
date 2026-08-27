@@ -22,14 +22,19 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '9.0.x' 
 
-    - name: Costruisci il progetto (Build)
+    - name: Costruisci Shared
+      run: dotnet build microservizi/Unipr.Magazzino/Unipr.Magazzino.Shared/Unipr.Magazzino.Shared.csproj -c Release
+
+    - name: Crea Pacchetto Shared
+      run: dotnet pack microservizi/Unipr.Magazzino/Unipr.Magazzino.Shared/Unipr.Magazzino.Shared.csproj -c Release --no-build -o out
+
+    - name: Costruisci ClientHttp
       run: dotnet build microservizi/Unipr.Magazzino/Unipr.Magazzino.ClientHttp/Unipr.Magazzino.ClientHttp.csproj -c Release
 
-    - name: Crea Pacchetto (Pack)
+    - name: Crea Pacchetto ClientHttp
       run: dotnet pack microservizi/Unipr.Magazzino/Unipr.Magazzino.ClientHttp/Unipr.Magazzino.ClientHttp.csproj -c Release --no-build -o out
 
     - name: Pubblica su GitHub Packages
-      #GitHub usa un token segreto automatico per caricare il pacchetto sul profilo
       run: dotnet nuget push "out/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
