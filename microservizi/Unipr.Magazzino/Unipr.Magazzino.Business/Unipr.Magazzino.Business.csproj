@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="System.Reactive" Version="7.0.0" />
+    <PackageReference Include="Utility.Kafka.2025" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unipr.Magazzino.Repository\Unipr.Magazzino.Repository.csproj" />
+    <ProjectReference Include="..\Unipr.Magazzino.Shared\Unipr.Magazzino.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

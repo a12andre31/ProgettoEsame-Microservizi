@@ -1,0 +1,6 @@
+@Unipr.Ordini.Api_HostAddress = http://localhost:5067
+
+GET {{Unipr.Ordini.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
