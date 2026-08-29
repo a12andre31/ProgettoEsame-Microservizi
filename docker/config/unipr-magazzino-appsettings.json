@@ -7,20 +7,28 @@
   },
   "AllowedHosts": "*",
   "ConnectionStrings": {
-    "PagamentiDbContext": "Server=mssql-server,1433;Database=Pagamenti;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
+    "MagazzinoDbContext": "Server=mssql-server,1433;Database=Magazzino;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
   },
   "Kafka": {
     "ProducerClient": {
-      "BootstrapServers": "localhost:9092"
+      "BootstrapServers": "kafka:29092"
     },
     "AdminClient": {
-      "BootstrapServers": "localhost:9092"
+      "BootstrapServers": "kafka:29092"
+    },
+    "ConsumerClient": {
+      "BootstrapServers": "kafka:29092",
+      "GroupId": "magazzino-group"
     },
     "Topics": {
-      "Pagamenti": "Pagamenti",
+      "Magazzino": "Magazzino",
       "Ordini": "Ordini"
     },
     "ProducerService": {
+      "IntervalSeconds": 60,
+      "DelaySeconds": 60
+    },
+    "ConsumerService": {
       "IntervalSeconds": 60,
       "DelaySeconds": 60
     }

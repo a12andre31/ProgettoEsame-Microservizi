@@ -10,7 +10,7 @@
     "OrdiniDbContext": "Server=mssql-server,1433;Database=Ordini;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
   },
   "MagazzinoClientHttp": {
-    "BaseAddress": "https://localhost:7061"
+    "BaseAddress": "http://unipr-magazzino:8080"
   },
   "Kafka": {
     "ProducerClient": {
@@ -19,11 +19,20 @@
     "AdminClient": {
       "BootstrapServers": "kafka:29092"
     },
+    "ConsumerClient": {
+      "BootstrapServers": "kafka:29092",
+      "GroupId": "ordini-group"
+    },
     "Topics": {
       "Ordini": "Ordini",
-      "Magazzino": "Magazzino"
+      "Magazzino": "Magazzino",
+      "Pagamenti": "Pagamenti"
     },
     "ProducerService": {
+      "IntervalSeconds": 60,
+      "DelaySeconds": 60
+    },
+    "ConsumerService": {
       "IntervalSeconds": 60,
       "DelaySeconds": 60
     }

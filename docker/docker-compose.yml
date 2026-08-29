@@ -55,6 +55,7 @@ services:
       - kafka
     environment:
       TZ: Europe/Rome
+      ASPNETCORE_ENVIRONMENT: Development
     volumes:
       - "./config/unipr-ordini-appsettings.json:/app/appsettings.json:ro"
       
@@ -68,6 +69,7 @@ services:
       - kafka
     environment:
       TZ: Europe/Rome
+      ASPNETCORE_ENVIRONMENT: Development
     volumes:
       - "./config/unipr-magazzino-appsettings.json:/app/appsettings.json:ro"
       
@@ -81,6 +83,7 @@ services:
       - kafka
     environment:
       TZ: Europe/Rome
+      ASPNETCORE_ENVIRONMENT: Development
     volumes:
       - "./config/unipr-pagamenti-appsettings.json:/app/appsettings.json:ro"
 

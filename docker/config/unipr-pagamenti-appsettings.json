@@ -11,16 +11,24 @@
   },
   "Kafka": {
     "ProducerClient": {
-      "BootstrapServers": "localhost:9092"
+      "BootstrapServers": "kafka:29092"
     },
     "AdminClient": {
-      "BootstrapServers": "localhost:9092"
+      "BootstrapServers": "kafka:29092"
+    },
+    "ConsumerClient": {
+      "BootstrapServers": "kafka:29092",
+      "GroupId": "pagamenti-group"
     },
     "Topics": {
       "Pagamenti": "Pagamenti",
       "Ordini": "Ordini"
     },
     "ProducerService": {
+      "IntervalSeconds": 60,
+      "DelaySeconds": 60
+    },
+    "ConsumerService": {
       "IntervalSeconds": 60,
       "DelaySeconds": 60
     }
