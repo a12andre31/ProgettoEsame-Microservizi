@@ -7,6 +7,6 @@ public class OrdineReadDto
     public int Quantita { get; set; }
     public decimal PrezzoTotale { get; set; }
     public int IdCliente { get; set; }
-    public required string Stato { get; set; } //"Pending", "Completed", "Canceled"
+    public required string Stato { get; set; } //"Pending", "PendingPayment" ,"Completed", "Canceled"
     public DateTime DataCreazione { get; set; }
 }

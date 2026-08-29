@@ -1,0 +1,28 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "PagamentiDbContext": "Server=localhost,2433;Database=Pagamenti;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
+  },
+  "Kafka": {
+    "ProducerClient": {
+      "BootstrapServers": "localhost:9092"
+    },
+    "AdminClient": {
+      "BootstrapServers": "localhost:9092"
+    },
+    "Topics": {
+      "Pagamenti": "Pagamenti",
+      "Ordini": "Ordini"
+    },
+    "ProducerService": {
+      "IntervalSeconds": 60,
+      "DelaySeconds": 60
+    }
+  }
+}

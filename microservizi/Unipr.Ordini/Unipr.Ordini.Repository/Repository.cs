@@ -64,6 +64,17 @@ public class Repository(OrdiniDbContext ordiniDbContext) : IRepository
         return ordine;
     }
 
+    public async Task<IEnumerable<Ordine>> GetOrdiniScadutiAsync(int minutiScadenza, CancellationToken cancellationToken = default)
+    {
+        // Calcoliamo la data limite (es. 5 minuti fa)
+        var limiteTemporale = DateTime.UtcNow.AddMinutes(-minutiScadenza);
+
+        // Cerchiamo gli ordini incastrati nei due stati transitori e più vecchi del limite
+        return await ordiniDbContext.Ordini
+            .Where(x => (x.Stato == "Pending" || x.Stato == "PendingPayment") && x.DataCreazione < limiteTemporale)
+            .ToListAsync(cancellationToken);
+    }
+
     #region TransactionalOutbox
 
     public async Task<IEnumerable<TransactionalOutbox>> GetAllTransactionalOutboxAsync(CancellationToken cancellationToken = default)

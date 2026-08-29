@@ -8,11 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="System.Reactive" Version="7.0.0" />
+    <PackageReference Include="Unipr.Magazzino.ClientHttp" Version="1.0.0" />
     <PackageReference Include="Utility.Kafka.2025" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Unipr.Ordini.ClientHttp\Unipr.Ordini.ClientHttp.csproj" />
     <ProjectReference Include="..\Unipr.Ordini.Repository\Unipr.Ordini.Repository.csproj" />
     <ProjectReference Include="..\Unipr.Ordini.Shared\Unipr.Ordini.Shared.csproj" />
   </ItemGroup>

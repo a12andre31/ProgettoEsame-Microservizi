@@ -27,4 +27,7 @@ public static class TransactionalOutboxFactory
             Messaggio = JsonSerializer.Serialize(opMsg)
         };
     }
+
+    public static TransactionalOutbox CreatePaymentRequest(OrdineDaPagareDto dto) 
+        => Create("RichiestaPagamento", dto, Operations.Insert);
 }

@@ -11,7 +11,7 @@ public interface IRepository
     Task<Articolo?> GetArticoloByCodiceAsync(string codiceArticolo, CancellationToken cancellationToken = default);
     Task CreateOrUpdateArticoloAsync(ArticoloInsertDto dto, CancellationToken cancellationToken = default);
 
-    // Metodi Outbox uguali a Ordini...
+    // Metodi Outbox uguali a Ordini
     Task<IEnumerable<TransactionalOutbox>> GetAllTransactionalOutboxAsync(CancellationToken cancellationToken = default);
     Task DeleteTransactionalOutboxAsync(long id, CancellationToken cancellationToken = default);
     Task InsertTransactionalOutboxAsync(TransactionalOutbox transactionalOutbox, CancellationToken cancellationToken = default);

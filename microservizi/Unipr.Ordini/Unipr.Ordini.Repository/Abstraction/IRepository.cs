@@ -12,6 +12,7 @@ public interface IRepository
     // Metodi per gli Ordini
     Task<Ordine> CreateOrdineAsync(OrdineInsertDto ordineInsertDto, CancellationToken cancellationToken = default);
     Task<Ordine?> UpdateStatoOrdineAsync(int idOrdine, string nuovoStato, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Ordine>> GetOrdiniScadutiAsync(int minutiScadenza, CancellationToken cancellationToken = default);
 
     // Metodi per l'Outbox Pattern
     Task<IEnumerable<TransactionalOutbox>> GetAllTransactionalOutboxAsync(CancellationToken cancellationToken = default);

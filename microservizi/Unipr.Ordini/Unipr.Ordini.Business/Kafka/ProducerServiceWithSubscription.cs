@@ -44,6 +44,7 @@ public class ProducerServiceWithSubscription(
                 string topic = tran.Tabella switch
                 {
                     nameof(Ordine) => optionsTopics.Value.Ordini,
+                    "RichiestaPagamento" => optionsTopics.Value.Ordini,
                     _ => throw new ArgumentOutOfRangeException($"La tabella {tran.Tabella} non è gestita")
                 };
 

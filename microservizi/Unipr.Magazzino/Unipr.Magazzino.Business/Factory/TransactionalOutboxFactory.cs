@@ -9,8 +9,8 @@ namespace Magazzino.Business.Factory;
 
 public static class TransactionalOutboxFactory
 {
-    public static TransactionalOutbox CreateInsert(RispostaMagazzinoDto dto) => Create("Ordine", dto, Operations.Insert);
-    public static TransactionalOutbox CreateUpdate(RispostaMagazzinoDto dto) => Create("Ordine", dto, Operations.Update);
+    public static TransactionalOutbox CreateInsert(RispostaMagazzinoDto dto) => Create("Articolo", dto, Operations.Insert);
+    public static TransactionalOutbox CreateUpdate(RispostaMagazzinoDto dto) => Create("Articolo", dto, Operations.Update);
 
     private static TransactionalOutbox Create<TDTO>(string table, TDTO dto, string operation) where TDTO : class
     {

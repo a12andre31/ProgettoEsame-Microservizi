@@ -7,7 +7,7 @@ namespace Magazzino.Business;
 
 public class Business(IRepository repository, IUniprMagazzinoObserver observer) : IBusiness
 {
-    // Questo metodo serve a te da Swagger per riempire il magazzino all'inizio
+    // Questo metodo serve per riempire il magazzino all'inizio da Swagger
     public async Task RifornisciMagazzinoAsync(ArticoloInsertDto dto, CancellationToken cancellationToken = default)
     {
         await repository.BeginTransactionAsync(async (cancellation) =>
@@ -17,7 +17,6 @@ public class Business(IRepository repository, IUniprMagazzinoObserver observer) 
         }, cancellationToken);
     }
 
-    // Questo è il cuore della SAGA! Lo chiameremo in automatico.
     public async Task ElaboraPrenotazioneAsync(int idOrdine, string codiceArticolo, int quantitaRichiesta, CancellationToken cancellationToken = default)
     {
         await repository.BeginTransactionAsync(async (cancellation) =>
@@ -28,7 +27,7 @@ public class Business(IRepository repository, IUniprMagazzinoObserver observer) 
             // Controlliamo se c'è abbastanza merce
             if (articolo != null && articolo.QuantitaDisponibile >= quantitaRichiesta)
             {
-                // Se sì, scalo la quantità (uso un numero negativo)
+                // Se sì, scalo la quantità
                 await repository.CreateOrUpdateArticoloAsync(new ArticoloInsertDto { CodiceArticolo = codiceArticolo, Quantita = -quantitaRichiesta }, cancellation);
                 esitoPositivo = true;
             }
@@ -36,13 +35,12 @@ public class Business(IRepository repository, IUniprMagazzinoObserver observer) 
             // Creo la risposta e la metto in Outbox
             var risposta = new RispostaMagazzinoDto { IdOrdine = idOrdine, Esito = esitoPositivo ? "Confermato" : "Rifiutato" };
 
-            // NOTA: Dovrai aggiornare la tua TransactionalOutboxFactory per accettare RispostaMagazzinoDto
             await repository.InsertTransactionalOutboxAsync(TransactionalOutboxFactory.CreateInsert(risposta), cancellation);
             await repository.SaveChangesAsync(cancellation);
 
         }, cancellationToken);
 
-        // Sveglia il postino per mandare la risposta a Kafka!
+        // Sveglia per mandare la risposta a Kafka
         observer.NuovoOrdine.OnNext(1);
     }
 

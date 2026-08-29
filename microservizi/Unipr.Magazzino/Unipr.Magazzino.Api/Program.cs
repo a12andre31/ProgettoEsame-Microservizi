@@ -17,13 +17,16 @@ builder.Services.AddDbContext<MagazzinoDbContext>(options =>
 builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddScoped<IBusiness, Business>();
 
-// Pattern Observer (Reattività)
+// Pattern Observer 
 builder.Services.AddSingleton(p => ActivatorUtilities.CreateInstance<Subject>(p));
 builder.Services.AddSingleton<IUniprMagazzinoObservable>(p => p.GetRequiredService<Subject>());
 builder.Services.AddSingleton<IUniprMagazzinoObserver>(p => p.GetRequiredService<Subject>());
 
 // Kafka Producer
 builder.Services.AddKafkaProducerServiceWithSubscription<KafkaTopicsOutput, ProducerServiceWithSubscription>(builder.Configuration);
+
+// Kafka Consumer
+builder.Services.AddKafkaConsumerService<KafkaTopicsOutput, ConsumerHandlerFactory>(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,5 +42,11 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<MagazzinoDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 await app.RunAsync();
