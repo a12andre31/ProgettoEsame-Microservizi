@@ -7,7 +7,7 @@ ARG TOOOOMM_NUGET_USERNAME
 ARG TOOOOMM_NUGET_PASSWORD
 
 WORKDIR /src
-COPY ["nuget.config", "."]
+COPY ["NuGet.config", "."]
 COPY ["Unipr.Magazzino.Api/Unipr.Magazzino.Api.csproj", "Unipr.Magazzino.Api/"]
 COPY ["Unipr.Magazzino.Business/Unipr.Magazzino.Business.csproj", "Unipr.Magazzino.Business/"]
 COPY ["Unipr.Magazzino.Repository/Unipr.Magazzino.Repository.csproj", "Unipr.Magazzino.Repository/"]

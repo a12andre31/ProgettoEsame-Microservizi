@@ -12,7 +12,7 @@ ARG TOOOOMM_NUGET_PASSWORD
 WORKDIR /src
 
 # Copia il file delle password di NuGet
-COPY ["nuget.config", "."]
+COPY ["NuGet.config", "."]
 
 # Copia i file di progetto (i 5 layer)
 COPY ["Unipr.Ordini.Api/Unipr.Ordini.Api.csproj", "Unipr.Ordini.Api/"]
