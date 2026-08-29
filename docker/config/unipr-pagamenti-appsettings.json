@@ -7,7 +7,7 @@
   },
   "AllowedHosts": "*",
   "ConnectionStrings": {
-    "PagamentiDbContext": "Server=localhost,2433;Database=Pagamenti;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
+    "PagamentiDbContext": "Server=mssql-server,1433;Database=Pagamenti;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
   },
   "Kafka": {
     "ProducerClient": {

@@ -7,17 +7,17 @@
   },
   "AllowedHosts": "*",
   "ConnectionStrings": {
-    "OrdiniDbContext": "Server=localhost,2433;Database=Ordini;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
+    "OrdiniDbContext": "Server=mssql-server,1433;Database=Ordini;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
   },
   "MagazzinoClientHttp": {
     "BaseAddress": "https://localhost:7061"
   },
   "Kafka": {
     "ProducerClient": {
-      "BootstrapServers": "localhost:9092"
+      "BootstrapServers": "kafka:29092"
     },
     "AdminClient": {
-      "BootstrapServers": "localhost:9092"
+      "BootstrapServers": "kafka:29092"
     },
     "Topics": {
       "Ordini": "Ordini",

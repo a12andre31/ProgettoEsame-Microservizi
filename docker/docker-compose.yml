@@ -48,6 +48,8 @@ services:
   unipr-ordini:
     image: ghcr.io/${GITHUB_USERNAME}/unipr-ordini:latest
     pull_policy: always
+    ports:
+      - "5067:8080"
     depends_on:
       - mssql-server
       - kafka
@@ -59,6 +61,8 @@ services:
   unipr-magazzino:
     image: ghcr.io/${GITHUB_USERNAME}/unipr-magazzino:latest
     pull_policy: always
+    ports:
+      - "5068:8080"
     depends_on:
       - mssql-server
       - kafka
@@ -70,6 +74,8 @@ services:
   unipr-pagamenti:
     image: ghcr.io/${GITHUB_USERNAME}/unipr-pagamenti:latest
     pull_policy: always
+    ports:
+      - "5069:8080"
     depends_on:
       - mssql-server
       - kafka
