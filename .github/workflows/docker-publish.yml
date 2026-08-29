@@ -34,8 +34,8 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/unipr-ordini:latest
           build-args: |
-            TOOOOMM_NUGET_USERNAME=${{ secrets.TOOOOMM_NUGET_USERNAME }}
-            TOOOOMM_NUGET_PASSWORD=${{ secrets.TOOOOMM_NUGET_PASSWORD }}
+            TOOOOMM_NUGET_USERNAME=${{ github.actor }}
+            TOOOOMM_NUGET_PASSWORD=${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Magazzino
         uses: docker/build-push-action@v5
@@ -45,8 +45,8 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/unipr-magazzino:latest
           build-args: |
-            TOOOOMM_NUGET_USERNAME=${{ secrets.TOOOOMM_NUGET_USERNAME }}
-            TOOOOMM_NUGET_PASSWORD=${{ secrets.TOOOOMM_NUGET_PASSWORD }}
+            TOOOOMM_NUGET_USERNAME=${{ github.actor }}
+            TOOOOMM_NUGET_PASSWORD=${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Pagamenti
         uses: docker/build-push-action@v5
@@ -56,5 +56,5 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/unipr-pagamenti:latest
           build-args: |
-            TOOOOMM_NUGET_USERNAME=${{ secrets.TOOOOMM_NUGET_USERNAME }}
-            TOOOOMM_NUGET_PASSWORD=${{ secrets.TOOOOMM_NUGET_PASSWORD }}
+            TOOOOMM_NUGET_USERNAME=${{ github.actor }}
+            TOOOOMM_NUGET_PASSWORD=${{ secrets.GITHUB_TOKEN }}
