@@ -15,7 +15,7 @@ public class MagazzinoController(IBusiness business) : ControllerBase
         return Ok("Articoli aggiunti al magazzino con successo!");
     }
 
-    [HttpGet("Verifica")]
+    [HttpGet("/Magazzino/Verifica")]
     public async Task<ActionResult<bool>> VerificaDisponibilita([FromQuery] string codiceArticolo, [FromQuery] int quantita)
     {
         var disponibile = await business.VerificaDisponibilitaAsync(codiceArticolo, quantita);
