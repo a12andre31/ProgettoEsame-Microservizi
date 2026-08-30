@@ -35,7 +35,8 @@ public class ConsumerHandler(
                     await business.ElaboraPrenotazioneAsync(opMsg.Dto.Id, opMsg.Dto.CodiceArticolo, opMsg.Dto.Quantita, cancellationToken);
                 }
                 // 2. Ordine Annullato (Compensazione SAGA)
-                else if (opMsg.Operation == Operations.Update && opMsg.Dto.Stato == "Canceled")
+                else if (opMsg.Operation == Operations.Update &&
+                        (opMsg.Dto.Stato == "PagamentoRifiutato" || opMsg.Dto.Stato == "Timeout_Magazzino" || opMsg.Dto.Stato == "Timeout_Pagamenti"))
                 {
                     logger.LogWarning("Ordine {Id} annullato. Ripristino merce per {CodiceArticolo}.", opMsg.Dto.Id, opMsg.Dto.CodiceArticolo);
                     await business.AnnullaPrenotazioneAsync(opMsg.Dto.CodiceArticolo, opMsg.Dto.Quantita, cancellationToken);

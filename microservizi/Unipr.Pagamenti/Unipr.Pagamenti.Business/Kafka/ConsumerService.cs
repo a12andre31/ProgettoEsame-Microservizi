@@ -40,9 +40,10 @@ public class ConsumerHandler(
             {
                 var opMsg = JsonSerializer.Deserialize<OperationMessage<OrdineAnnullatoDto>>(message);
 
-                if (opMsg?.Dto != null && opMsg.Dto.Stato == "Canceled")
+                // Rimborsa SOLO se c'è stato un timeout di rete sulla propria transazione
+                if (opMsg?.Dto != null && opMsg.Dto.Stato == "Timeout_Pagamenti")
                 {
-                    logger.LogWarning("Rimborso di {Importo} al cliente {IdCliente} per ordine annullato.", opMsg.Dto.PrezzoTotale, opMsg.Dto.IdCliente);
+                    logger.LogWarning("Rimborso di emergenza di {Importo} al cliente {IdCliente} per Timeout.", opMsg.Dto.PrezzoTotale, opMsg.Dto.IdCliente);
                     await business.RimborsaPagamentoAsync(opMsg.Dto.IdCliente, opMsg.Dto.PrezzoTotale, cancellationToken);
                 }
             }

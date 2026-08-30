@@ -77,12 +77,13 @@ public class Business(IRepository repository, ILogger<Business> logger, IMapper 
     {
         await repository.BeginTransactionAsync(async (cancellation) =>
         {
-            string nuovoStato = esito == "Pagato" ? "Completed" : "Canceled";
+            // Usiamo uno stato specifico se i fondi non bastano
+            string nuovoStato = esito == "Pagato" ? "Completed" : "PagamentoRifiutato";
 
             var ordine = await repository.UpdateStatoOrdineAsync(idOrdine, nuovoStato, cancellation);
 
-            // Transazione di Compensazione (Rollback) se il pagamento fallisce
-            if (nuovoStato == "Canceled" && ordine != null)
+            // Lanciamo il rollback solo per questo stato
+            if (nuovoStato == "PagamentoRifiutato" && ordine != null)
             {
                 var dtoAnnullamento = map.Map<OrdineReadDto>(ordine);
                 var outboxMessage = TransactionalOutboxFactory.CreateUpdate(dtoAnnullamento);

@@ -38,7 +38,8 @@ public class SagaTimeoutService(
                         // Apriamo la transazione per annullare l'ordine e avvisare Kafka
                         await repository.BeginTransactionAsync(async (cancellation) =>
                         {
-                            var ordineAnnullato = await repository.UpdateStatoOrdineAsync(ordine.Id, "Canceled", cancellation);
+                            string statoAnnullamento = ordine.Stato == "Pending" ? "Timeout_Magazzino" : "Timeout_Pagamenti";
+                            var ordineAnnullato = await repository.UpdateStatoOrdineAsync(ordine.Id, statoAnnullamento, cancellation);
 
                             // Trasformiamo in DTO per inviarlo via Kafka
                             var ordineDto = map.Map<OrdineReadDto>(ordineAnnullato);
