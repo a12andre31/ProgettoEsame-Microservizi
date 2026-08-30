@@ -17,17 +17,34 @@ public class ConsumerHandler(
     {
         try
         {
-            var opMsg = JsonSerializer.Deserialize<OperationMessage<OrdineDaPagareDto>>(message);
+            // Sbirciamo solo la parola "Operation" per decidere quale DTO usare
+            using var doc = JsonDocument.Parse(message);
+            var operation = doc.RootElement.GetProperty("Operation").GetString();
 
-            // Solo se è una richiesta inserita da Ordini
-            if (opMsg != null && opMsg.Operation == Operations.Insert)
+            using var scope = serviceScopeFactory.CreateScope();
+            var business = scope.ServiceProvider.GetRequiredService<IBusiness>();
+
+            // 1. Avanzamento SAGA (Addebito)
+            if (operation == Operations.Insert)
             {
-                logger.LogInformation("Richiesta pagamento per Ordine {IdOrdine}. Importo: {Importo}", opMsg.Dto.IdOrdine, opMsg.Dto.Importo);
+                var opMsg = JsonSerializer.Deserialize<OperationMessage<OrdineDaPagareDto>>(message);
 
-                using var scope = serviceScopeFactory.CreateScope();
-                var business = scope.ServiceProvider.GetRequiredService<IBusiness>();
+                if (opMsg?.Dto != null)
+                {
+                    logger.LogInformation("Richiesta pagamento per Ordine {IdOrdine}. Importo: {Importo}", opMsg.Dto.IdOrdine, opMsg.Dto.Importo);
+                    await business.ElaboraPagamentoAsync(opMsg.Dto.IdOrdine, opMsg.Dto.IdCliente, opMsg.Dto.Importo, cancellationToken);
+                }
+            }
+            // 2. Compensazione SAGA (Rimborso)
+            else if (operation == Operations.Update)
+            {
+                var opMsg = JsonSerializer.Deserialize<OperationMessage<OrdineAnnullatoDto>>(message);
 
-                await business.ElaboraPagamentoAsync(opMsg.Dto.IdOrdine, opMsg.Dto.IdCliente, opMsg.Dto.Importo, cancellationToken);
+                if (opMsg?.Dto != null && opMsg.Dto.Stato == "Canceled")
+                {
+                    logger.LogWarning("Rimborso di {Importo} al cliente {IdCliente} per ordine annullato.", opMsg.Dto.PrezzoTotale, opMsg.Dto.IdCliente);
+                    await business.RimborsaPagamentoAsync(opMsg.Dto.IdCliente, opMsg.Dto.PrezzoTotale, cancellationToken);
+                }
             }
         }
         catch (Exception ex)

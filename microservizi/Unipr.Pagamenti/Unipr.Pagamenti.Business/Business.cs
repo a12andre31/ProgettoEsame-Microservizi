@@ -41,4 +41,13 @@ public class Business(IRepository repository, IUniprPagamentiObserver observer) 
         // 4. Suona il campanello per spedire il messaggio Kafka
         observer.NuovoPagamento.OnNext(1);
     }
+
+    public async Task RimborsaPagamentoAsync(int idCliente, decimal importo, CancellationToken cancellationToken = default)
+    {
+        await repository.BeginTransactionAsync(async (cancellation) =>
+        {
+            await repository.CreaOAggiornaContoAsync(idCliente, importo, cancellation);
+            await repository.SaveChangesAsync(cancellation);
+        }, cancellationToken);
+    }
 }
