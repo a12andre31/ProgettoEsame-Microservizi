@@ -50,4 +50,15 @@ public class Business(IRepository repository, IUniprMagazzinoObserver observer) 
         var articolo = await repository.GetArticoloByCodiceAsync(codiceArticolo, cancellationToken);
         return articolo != null && articolo.QuantitaDisponibile >= quantitaRichiesta;
     }
+
+    public async Task AnnullaPrenotazioneAsync(string codiceArticolo, int quantita, CancellationToken cancellationToken = default)
+    {
+        await repository.BeginTransactionAsync(async (cancellation) =>
+        {
+            // Rimettiamo la merce a scaffale
+            await repository.CreateOrUpdateArticoloAsync(new ArticoloInsertDto { CodiceArticolo = codiceArticolo, Quantita = quantita }, cancellation);
+            await repository.SaveChangesAsync(cancellation);
+        }, cancellationToken);
+    }
+
 }

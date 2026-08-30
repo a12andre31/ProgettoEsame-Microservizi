@@ -8,6 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 # Queste variabili ci servono per passare username e token di GitHub per scaricare i pacchetti NuGet privati
 ARG TOOOOMM_NUGET_USERNAME
 ARG TOOOOMM_NUGET_PASSWORD
+ENV TOOOOMM_NUGET_USERNAME=$TOOOOMM_NUGET_USERNAME
+ENV TOOOOMM_NUGET_PASSWORD=$TOOOOMM_NUGET_PASSWORD
 
 WORKDIR /src
 

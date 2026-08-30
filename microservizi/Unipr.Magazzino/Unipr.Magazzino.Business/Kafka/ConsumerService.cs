@@ -21,17 +21,25 @@ public class ConsumerHandler(
             // Decifriamo la busta standard di Kafka
             var opMsg = JsonSerializer.Deserialize<OperationMessage<OrdineInArrivoDto>>(message);
 
-            // Solo i nuovi ordini (Insert) nello stato "Pending"
-            if (opMsg != null && opMsg.Operation == Operations.Insert && opMsg.Dto.Stato == "Pending")
+            if (opMsg != null)
             {
-                logger.LogInformation("Ricevuto nuovo ordine {IdOrdine}. Avvio elaborazione...", opMsg.Dto.Id);
-
                 // Apriamo uno scope per usare IBusiness in modo sicuro
                 using var scope = serviceScopeFactory.CreateScope();
                 var business = scope.ServiceProvider.GetRequiredService<IBusiness>();
 
-                // Lanciamo la nostra logica SAGA
-                await business.ElaboraPrenotazioneAsync(opMsg.Dto.Id, opMsg.Dto.CodiceArticolo, opMsg.Dto.Quantita, cancellationToken);
+                // 1. Nuovo Ordine (Avanzamento SAGA)
+                if (opMsg.Operation == Operations.Insert && opMsg.Dto.Stato == "Pending")
+                {
+                    logger.LogInformation("Nuovo ordine {Id}. Avvio prenotazione...", opMsg.Dto.Id);
+                    // Lanciamo la logica SAGA
+                    await business.ElaboraPrenotazioneAsync(opMsg.Dto.Id, opMsg.Dto.CodiceArticolo, opMsg.Dto.Quantita, cancellationToken);
+                }
+                // 2. Ordine Annullato (Compensazione SAGA)
+                else if (opMsg.Operation == Operations.Update && opMsg.Dto.Stato == "Canceled")
+                {
+                    logger.LogWarning("Ordine {Id} annullato. Ripristino merce per {CodiceArticolo}.", opMsg.Dto.Id, opMsg.Dto.CodiceArticolo);
+                    await business.AnnullaPrenotazioneAsync(opMsg.Dto.CodiceArticolo, opMsg.Dto.Quantita, cancellationToken);
+                }
             }
         }
         catch (Exception ex)

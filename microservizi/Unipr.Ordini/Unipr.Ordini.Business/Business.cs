@@ -72,4 +72,26 @@ public class Business(IRepository repository, ILogger<Business> logger, IMapper 
         // Suoniamo il campanello per spedire tutto!
         observer.NuovoOrdine.OnNext(1);
     }
+
+    public async Task GestisciRispostaPagamentoAsync(int idOrdine, string esito, CancellationToken cancellationToken = default)
+    {
+        await repository.BeginTransactionAsync(async (cancellation) =>
+        {
+            string nuovoStato = esito == "Pagato" ? "Completed" : "Canceled";
+
+            var ordine = await repository.UpdateStatoOrdineAsync(idOrdine, nuovoStato, cancellation);
+
+            // Transazione di Compensazione (Rollback) se il pagamento fallisce
+            if (nuovoStato == "Canceled" && ordine != null)
+            {
+                var dtoAnnullamento = map.Map<OrdineReadDto>(ordine);
+                var outboxMessage = TransactionalOutboxFactory.CreateUpdate(dtoAnnullamento);
+                await repository.InsertTransactionalOutboxAsync(outboxMessage, cancellation);
+            }
+
+            await repository.SaveChangesAsync(cancellation);
+        }, cancellationToken);
+
+        observer.NuovoOrdine.OnNext(1);
+    }
 }

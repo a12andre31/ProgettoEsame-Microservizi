@@ -11,23 +11,31 @@ namespace Ordini.Business.Kafka;
 
 public class ConsumerHandler(
     ILogger<ConsumerHandler> logger,
-    IServiceScopeFactory serviceScopeFactory) : IMessageHandler<string, string>
+    IServiceScopeFactory serviceScopeFactory,
+    string topic) : IMessageHandler<string, string>
 {
     public async Task OnMessageReceivedAsync(string key, string message, CancellationToken cancellationToken)
     {
         try
         {
-            var opMsg = JsonSerializer.Deserialize<OperationMessage<RispostaMagazzinoInArrivoDto>>(message);
+            using var scope = serviceScopeFactory.CreateScope();
+            var business = scope.ServiceProvider.GetRequiredService<IBusiness>();
 
-            // Solo le nuove risposte inserite dal Magazzino
-            if (opMsg != null && opMsg.Operation == Operations.Insert)
+            if (topic == "Magazzino")
             {
-                logger.LogInformation("Ricevuta risposta da Magazzino per Ordine {IdOrdine}: {Esito}", opMsg.Dto.IdOrdine, opMsg.Dto.Esito);
-
-                using var scope = serviceScopeFactory.CreateScope();
-                var business = scope.ServiceProvider.GetRequiredService<IBusiness>();
-
-                await business.GestisciRispostaMagazzinoAsync(opMsg.Dto.IdOrdine, opMsg.Dto.Esito, cancellationToken);
+                var opMsg = JsonSerializer.Deserialize<OperationMessage<RispostaMagazzinoInArrivoDto>>(message);
+                if (opMsg != null && opMsg.Operation == Operations.Insert)
+                {
+                    await business.GestisciRispostaMagazzinoAsync(opMsg.Dto.IdOrdine, opMsg.Dto.Esito, cancellationToken);
+                }
+            }
+            else if (topic == "Pagamenti")
+            {
+                var opMsg = JsonSerializer.Deserialize<OperationMessage<RispostaPagamentoInArrivoDto>>(message);
+                if (opMsg != null && opMsg.Operation == Operations.Insert)
+                {
+                    await business.GestisciRispostaPagamentoAsync(opMsg.Dto.IdOrdine, opMsg.Dto.Esito, cancellationToken);
+                }
             }
         }
         catch (Exception ex)
@@ -43,6 +51,6 @@ public class ConsumerHandlerFactory(
 {
     public IMessageHandler<string, string> Create(string topic, IServiceProvider serviceProvider)
     {
-        return new ConsumerHandler(logger, serviceScopeFactory);
+        return new ConsumerHandler(logger, serviceScopeFactory, topic);
     }
 }
