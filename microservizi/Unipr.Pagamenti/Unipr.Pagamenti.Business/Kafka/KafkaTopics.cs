@@ -7,5 +7,5 @@ public class KafkaTopicsOutput : AbstractKafkaTopics
     public string Pagamenti { get; set; } = "Pagamenti";
     public string Ordini { get; set; } = "Ordini";
 
-    public override IEnumerable<string> GetTopics() => [Pagamenti];
+    public override IEnumerable<string> GetTopics() => [Pagamenti, Ordini];
 }
