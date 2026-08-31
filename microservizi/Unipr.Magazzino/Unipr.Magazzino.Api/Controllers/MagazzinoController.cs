@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Magazzino.Business.Abstraction;
+﻿using Magazzino.Business.Abstraction;
 using Magazzino.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Magazzino.Api.Controllers;
 
@@ -9,6 +10,7 @@ namespace Magazzino.Api.Controllers;
 public class MagazzinoController(IBusiness business) : ControllerBase
 {
     [HttpPost(Name = "Rifornisci")]
+    [Authorize]
     public async Task<ActionResult> Rifornisci(ArticoloInsertDto dto)
     {
         await business.RifornisciMagazzinoAsync(dto);

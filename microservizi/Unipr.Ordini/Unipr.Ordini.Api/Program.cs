@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Ordini.Business;
 using Ordini.Business.Abstraction;
@@ -41,6 +42,15 @@ builder.Services.AddHostedService<SagaTimeoutService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Condivisione Chiavi Portatile
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"../SharedCookieKeys"))
+    .SetApplicationName("SharedCookieApp");
+
+//Lettura del Cookie di Identity
+builder.Services.AddAuthentication("Identity.Application")
+    .AddCookie("Identity.Application");
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -50,8 +60,11 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+
 
 using (var scope = app.Services.CreateScope())
 {

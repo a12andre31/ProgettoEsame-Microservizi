@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Pagamenti.Business;
 using Pagamenti.Business.Abstraction;
@@ -30,6 +31,15 @@ builder.Services.AddKafkaConsumerService<KafkaTopicsOutput, ConsumerHandlerFacto
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Condivisione Chiavi Portatile
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"../SharedCookieKeys"))
+    .SetApplicationName("SharedCookieApp");
+
+// Lettura del Cookie di Identity
+builder.Services.AddAuthentication("Identity.Application")
+    .AddCookie("Identity.Application");
 
 var app = builder.Build();
 

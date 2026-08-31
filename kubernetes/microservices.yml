@@ -1,0 +1,134 @@
+# Ordini
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordini-deployment
+spec:
+  selector:
+    matchLabels:
+      app: ordini
+  template:
+    metadata:
+      labels:
+        app: ordini
+    spec:
+      containers:
+      - name: ordini
+        image: ghcr.io/a12andre31/unipr-ordini:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        volumeMounts:
+        - name: ordini-config-volume
+          mountPath: /app/appsettings.json
+          subPath: appsettings.json
+          readOnly: true
+      volumes:
+      - name: ordini-config-volume
+        configMap:
+          name: ordini-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ordini-service
+spec:
+  selector:
+    app: ordini
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+# Magazzino
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: magazzino-deployment
+spec:
+  selector:
+    matchLabels:
+      app: magazzino
+  template:
+    metadata:
+      labels:
+        app: magazzino
+    spec:
+      containers:
+      - name: magazzino
+        image: ghcr.io/a12andre31/unipr-magazzino:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        volumeMounts:
+        - name: magazzino-config-volume
+          mountPath: /app/appsettings.json
+          subPath: appsettings.json
+          readOnly: true
+      volumes:
+      - name: magazzino-config-volume
+        configMap:
+          name: magazzino-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: magazzino-service
+spec:
+  selector:
+    app: magazzino
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+# Pagamenti
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pagamenti-deployment
+spec:
+  selector:
+    matchLabels:
+      app: pagamenti
+  template:
+    metadata:
+      labels:
+        app: pagamenti
+    spec:
+      containers:
+      - name: pagamenti
+        image: ghcr.io/a12andre31/unipr-pagamenti:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        volumeMounts:
+        - name: pagamenti-config-volume
+          mountPath: /app/appsettings.json
+          subPath: appsettings.json
+          readOnly: true
+      volumes:
+      - name: pagamenti-config-volume
+        configMap:
+          name: pagamenti-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pagamenti-service
+spec:
+  selector:
+    app: pagamenti
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

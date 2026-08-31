@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ordini-config
+data:
+  appsettings.json: |
+    {
+      "AllowedHosts": "*",
+      "ConnectionStrings": {
+        "OrdiniDbContext": "Server=mssql-service,1433;Database=Ordini;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
+      },
+      "Kafka": {
+        "ProducerClient": { "BootstrapServers": "kafka-service:9092" },
+        "ConsumerClient": { "BootstrapServers": "kafka-service:9092", "GroupId": "ordini-group" },
+        "AdminClient": { "BootstrapServers": "kafka-service:9092" },
+        "Topics": { "Ordini": "Ordini", "Magazzino": "Magazzino", "Pagamenti": "Pagamenti" },
+        "ProducerService": { "IntervalSeconds": 60, "DelaySeconds": 60 }
+      },
+      "MagazzinoClientHttp": {
+        "BaseAddress": "http://magazzino-service:80"
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: magazzino-config
+data:
+  appsettings.json: |
+    {
+      "AllowedHosts": "*",
+      "ConnectionStrings": {
+        "MagazzinoDbContext": "Server=mssql-service,1433;Database=Magazzino;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
+      },
+      "Kafka": {
+        "ProducerClient": { "BootstrapServers": "kafka-service:9092" },
+        "ConsumerClient": { "BootstrapServers": "kafka-service:9092", "GroupId": "magazzino-group" },
+        "AdminClient": { "BootstrapServers": "kafka-service:9092" },
+        "Topics": { "Ordini": "Ordini", "Magazzino": "Magazzino", "Pagamenti": "Pagamenti" },
+        "ProducerService": { "IntervalSeconds": 60, "DelaySeconds": 60 }
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pagamenti-config
+data:
+  appsettings.json: |
+    {
+      "AllowedHosts": "*",
+      "ConnectionStrings": {
+        "PagamentiDbContext": "Server=mssql-service,1433;Database=Pagamenti;User Id=sa;Password=p4ssw0rD;Encrypt=False;Trusted_Connection=False;"
+      },
+      "Kafka": {
+        "ProducerClient": { "BootstrapServers": "kafka-service:9092" },
+        "ConsumerClient": { "BootstrapServers": "kafka-service:9092", "GroupId": "pagamenti-group" },
+        "AdminClient": { "BootstrapServers": "kafka-service:9092" },
+        "Topics": { "Ordini": "Ordini", "Magazzino": "Magazzino", "Pagamenti": "Pagamenti" },
+        "ProducerService": { "IntervalSeconds": 60, "DelaySeconds": 60 }
+      }
+    }

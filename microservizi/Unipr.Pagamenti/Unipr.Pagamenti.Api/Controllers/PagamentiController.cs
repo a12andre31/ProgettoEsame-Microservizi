@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pagamenti.Business.Abstraction;
 
@@ -8,6 +9,7 @@ namespace Pagamenti.Api.Controllers;
 public class PagamentiController(IBusiness business) : ControllerBase
 {
     [HttpPost(Name = "RicaricaConto")]
+    [Authorize]
     public async Task<ActionResult> RicaricaConto([FromQuery] int idCliente, [FromQuery] decimal importo)
     {
         await business.RicaricaContoAsync(idCliente, importo);

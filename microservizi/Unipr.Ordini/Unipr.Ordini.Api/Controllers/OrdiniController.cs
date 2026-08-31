@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Ordini.Business.Abstraction;
 using Ordini.Shared;
 
@@ -9,6 +10,7 @@ namespace Ordini.Api.Controllers;
 public class OrdiniController(IBusiness business) : ControllerBase
 {
     [HttpPost(Name = "CreateOrdine")]
+    [Authorize]
     public async Task<ActionResult> CreateOrdine(OrdineInsertDto ordineInsertDto)
     {
         await business.CreateOrdineAsync(ordineInsertDto);

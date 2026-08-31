@@ -1,0 +1,57 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: saga-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      # Rotte Swagger
+      - path: /ordini/(swagger.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ordini-service
+            port:
+              number: 80
+      - path: /magazzino/(swagger.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: magazzino-service
+            port:
+              number: 80
+      - path: /pagamenti/(swagger.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: pagamenti-service
+            port:
+              number: 80
+              
+      # Rotte API
+      - path: /(Ordini.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ordini-service
+            port:
+              number: 80
+      - path: /(Magazzino.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: magazzino-service
+            port:
+              number: 80
+      - path: /(Pagamenti.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: pagamenti-service
+            port:
+              number: 80
