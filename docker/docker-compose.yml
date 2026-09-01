@@ -58,6 +58,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
     volumes:
       - "./config/unipr-ordini-appsettings.json:/app/appsettings.json:ro"
+      - "shared-cookie-keys:/SharedCookieKeys"
       
   unipr-magazzino:
     image: ghcr.io/${GITHUB_USERNAME}/unipr-magazzino:latest
@@ -72,6 +73,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
     volumes:
       - "./config/unipr-magazzino-appsettings.json:/app/appsettings.json:ro"
+      - "shared-cookie-keys:/SharedCookieKeys"
       
   unipr-pagamenti:
     image: ghcr.io/${GITHUB_USERNAME}/unipr-pagamenti:latest
@@ -86,6 +88,22 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
     volumes:
       - "./config/unipr-pagamenti-appsettings.json:/app/appsettings.json:ro"
+      - "shared-cookie-keys:/SharedCookieKeys"
+
+  unipr-webapp:
+    build:
+      context: ../microservizi/Unipr.Ordini/Unipr.WebApp
+      dockerfile: Dockerfile
+    ports:
+      - "5100:8080"
+    depends_on:
+      - mssql-server
+    environment:
+      TZ: Europe/Rome
+      ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - "shared-cookie-keys:/SharedCookieKeys"
 
 volumes:
   mssql-server:
+  shared-cookie-keys:
