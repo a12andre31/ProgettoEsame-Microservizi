@@ -113,3 +113,14 @@ spec:
   ports:
     - protocol: TCP
       port: 9092
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-cookie-keys-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi

@@ -40,4 +40,10 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<OrdiniDbContext>();
+    await db.Database.MigrateAsync();
+}
+
 app.Run();

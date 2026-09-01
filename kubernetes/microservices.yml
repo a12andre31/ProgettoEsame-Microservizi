@@ -26,10 +26,15 @@ spec:
           mountPath: /app/appsettings.json
           subPath: appsettings.json
           readOnly: true
+        - name: shared-cookie-keys
+          mountPath: /root/.aspnet/DataProtection-Keys
       volumes:
       - name: ordini-config-volume
         configMap:
           name: ordini-config
+      - name: shared-cookie-keys
+        persistentVolumeClaim:
+          claimName: shared-cookie-keys-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -71,10 +76,15 @@ spec:
           mountPath: /app/appsettings.json
           subPath: appsettings.json
           readOnly: true
+        - name: shared-cookie-keys
+          mountPath: /root/.aspnet/DataProtection-Keys
       volumes:
       - name: magazzino-config-volume
         configMap:
           name: magazzino-config
+      - name: shared-cookie-keys
+        persistentVolumeClaim:
+          claimName: shared-cookie-keys-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -116,10 +126,15 @@ spec:
           mountPath: /app/appsettings.json
           subPath: appsettings.json
           readOnly: true
+        - name: shared-cookie-keys
+          mountPath: /root/.aspnet/DataProtection-Keys
       volumes:
       - name: pagamenti-config-volume
         configMap:
           name: pagamenti-config
+      - name: shared-cookie-keys
+        persistentVolumeClaim:
+          claimName: shared-cookie-keys-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -128,6 +143,56 @@ metadata:
 spec:
   selector:
     app: pagamenti
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+# WebApp
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: ghcr.io/a12andre31/unipr-webapp:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        volumeMounts:
+        - name: webapp-config-volume
+          mountPath: /app/appsettings.json
+          subPath: appsettings.json
+          readOnly: true
+        - name: shared-cookie-keys
+          mountPath: /root/.aspnet/DataProtection-Keys
+      volumes:
+      - name: webapp-config-volume
+        configMap:
+          name: webapp-config
+      - name: shared-cookie-keys
+        persistentVolumeClaim:
+          claimName: shared-cookie-keys-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  selector:
+    app: webapp
   ports:
     - protocol: TCP
       port: 80

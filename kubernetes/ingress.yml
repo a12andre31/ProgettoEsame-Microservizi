@@ -55,3 +55,10 @@ spec:
             name: pagamenti-service
             port:
               number: 80
+      - path: /(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: webapp-service
+            port:
+              number: 80
