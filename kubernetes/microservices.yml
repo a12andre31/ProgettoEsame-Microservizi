@@ -27,7 +27,7 @@ spec:
           subPath: appsettings.json
           readOnly: true
         - name: shared-cookie-keys
-          mountPath: /root/.aspnet/DataProtection-Keys
+          mountPath: /SharedCookieKeys
       volumes:
       - name: ordini-config-volume
         configMap:
@@ -77,7 +77,7 @@ spec:
           subPath: appsettings.json
           readOnly: true
         - name: shared-cookie-keys
-          mountPath: /root/.aspnet/DataProtection-Keys
+          mountPath: /SharedCookieKeys
       volumes:
       - name: magazzino-config-volume
         configMap:
@@ -127,7 +127,7 @@ spec:
           subPath: appsettings.json
           readOnly: true
         - name: shared-cookie-keys
-          mountPath: /root/.aspnet/DataProtection-Keys
+          mountPath: /SharedCookieKeys
       volumes:
       - name: pagamenti-config-volume
         configMap:
@@ -177,7 +177,7 @@ spec:
           subPath: appsettings.json
           readOnly: true
         - name: shared-cookie-keys
-          mountPath: /root/.aspnet/DataProtection-Keys
+          mountPath: /SharedCookieKeys
       volumes:
       - name: webapp-config-volume
         configMap:

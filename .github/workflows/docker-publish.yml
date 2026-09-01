@@ -62,8 +62,8 @@ jobs:
       - name: Build and push WebApp
         uses: docker/build-push-action@v5
         with:
-          context: Unipr.WebApp
-          file: Unipr.WebApp/Dockerfile
+          context: microservizi/Unipr.Ordini/Unipr.WebApp
+          file: microservizi/Unipr.Ordini/Unipr.WebApp/Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/unipr-webapp:latest
           build-args: |
