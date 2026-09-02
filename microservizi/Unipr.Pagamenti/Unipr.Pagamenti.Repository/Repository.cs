@@ -61,14 +61,14 @@ public class Repository(PagamentiDbContext dbContext) : IRepository
     {
         var conto = await GetContoByClienteAsync(idCliente, cancellationToken);
 
-        // Se il conto esiste e ci sono abbastanza soldi, scaliamo il saldo (PIVOT = TRUE)
+        // Se il conto esiste e ci sono abbastanza soldi, scaliamo il saldo
         if (conto != null && conto.Saldo >= importo)
         {
             conto.Saldo -= importo;
             return true;
         }
 
-        // Altrimenti la transazione fallisce (PIVOT = FALSE)
+        // Altrimenti la transazione fallisce 
         return false;
     }
 

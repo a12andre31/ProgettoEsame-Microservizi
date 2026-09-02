@@ -22,10 +22,9 @@ public class Business(IRepository repository, IUniprPagamentiObserver observer) 
     {
         await repository.BeginTransactionAsync(async (cancellation) =>
         {
-            // 1. Tenta il prelievo. Se true, la SAGA è tecnicamente conclusa con successo.
+            // Tenta il prelievo. Se true, la SAGA è tecnicamente conclusa con successo.
             bool esitoPositivo = await repository.PrelevaFondiAsync(idCliente, importo, cancellation);
 
-            // 2. Prepara il verdetto
             var risposta = new RispostaPagamentoDto
             {
                 IdOrdine = idOrdine,

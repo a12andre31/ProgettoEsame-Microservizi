@@ -24,7 +24,7 @@ public class ConsumerHandler(
             using var scope = serviceScopeFactory.CreateScope();
             var business = scope.ServiceProvider.GetRequiredService<IBusiness>();
 
-            // 1. Avanzamento SAGA (Addebito)
+            // Avanzamento SAGA (Addebito)
             if (operation == Operations.Insert)
             {
                 var opMsg = JsonSerializer.Deserialize<OperationMessage<OrdineDaPagareDto>>(message);
@@ -35,7 +35,7 @@ public class ConsumerHandler(
                     await business.ElaboraPagamentoAsync(opMsg.Dto.IdOrdine, opMsg.Dto.IdCliente, opMsg.Dto.Importo, cancellationToken);
                 }
             }
-            // 2. Compensazione SAGA (Rimborso)
+            // Compensazione SAGA (Rimborso)
             else if (operation == Operations.Update)
             {
                 var opMsg = JsonSerializer.Deserialize<OperationMessage<OrdineAnnullatoDto>>(message);
