@@ -27,14 +27,14 @@ public class ConsumerHandler(
                 using var scope = serviceScopeFactory.CreateScope();
                 var business = scope.ServiceProvider.GetRequiredService<IBusiness>();
 
-                // 1. Nuovo Ordine (Avanzamento SAGA)
+                // Nuovo Ordine (Avanzamento SAGA)
                 if (opMsg.Operation == Operations.Insert && opMsg.Dto.Stato == "Pending")
                 {
                     logger.LogInformation("Nuovo ordine {Id}. Avvio prenotazione...", opMsg.Dto.Id);
                     // Lanciamo la logica SAGA
                     await business.ElaboraPrenotazioneAsync(opMsg.Dto.Id, opMsg.Dto.CodiceArticolo, opMsg.Dto.Quantita, cancellationToken);
                 }
-                // 2. Ordine Annullato (Compensazione SAGA)
+                // Ordine Annullato (Compensazione SAGA)
                 else if (opMsg.Operation == Operations.Update &&
                         (opMsg.Dto.Stato == "PagamentoRifiutato" || opMsg.Dto.Stato == "Timeout_Magazzino" || opMsg.Dto.Stato == "Timeout_Pagamenti"))
                 {

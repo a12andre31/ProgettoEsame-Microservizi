@@ -17,13 +17,13 @@ public class Business(IRepository repository, ILogger<Business> logger, IMapper 
             ordineInsertDto.CodiceArticolo,
             ordineInsertDto.Quantita);
 
-        // Se il magazzino risponde picche, blocchiamo l'ordine e lanciamo un errore
+        // Se il magazzino risponde false, blocchiamo l'ordine e lanciamo un errore
         if (!isDisponibile)
         {
             throw new Exception($"Impossibile creare l'ordine: L'articolo '{ordineInsertDto.CodiceArticolo}' non è disponibile in magazzino per la quantità richiesta ({ordineInsertDto.Quantita}).");
         }
 
-        // 2. Se c'è disponibilità, procediamo normalmente salvando l'ordine
+        // Se c'è disponibilità, procediamo normalmente salvando l'ordine
         // Avviamo la transazione sicura
         await repository.BeginTransactionAsync(async (CancellationToken cancellation) =>
         {
@@ -69,7 +69,7 @@ public class Business(IRepository repository, ILogger<Business> logger, IMapper 
             }
         }, cancellationToken);
 
-        // Suoniamo il campanello per spedire tutto!
+        // Notifichiamo in tempo reale al servizio in background che c'è un nuovo messaggio da spedire
         observer.NuovoOrdine.OnNext(1);
     }
 
