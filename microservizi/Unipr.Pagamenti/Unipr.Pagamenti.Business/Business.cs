@@ -17,7 +17,7 @@ public class Business(IRepository repository, IUniprPagamentiObserver observer) 
         }, cancellationToken);
     }
 
-    // IL PERNO DELLA SAGA (Transazione Pivot)
+    // Transazione Pivot
     public async Task ElaboraPagamentoAsync(int idOrdine, int idCliente, decimal importo, CancellationToken cancellationToken = default)
     {
         await repository.BeginTransactionAsync(async (cancellation) =>
@@ -31,13 +31,13 @@ public class Business(IRepository repository, IUniprPagamentiObserver observer) 
                 Esito = esitoPositivo ? "Pagato" : "Rifiutato_FondiInsufficienti"
             };
 
-            // 3. Imbuca la lettera per avvisare Ordini e Magazzino
+            // Imbuca la lettera per avvisare Ordini e Magazzino
             await repository.InsertTransactionalOutboxAsync(TransactionalOutboxFactory.CreateInsert(risposta), cancellation);
             await repository.SaveChangesAsync(cancellation);
 
         }, cancellationToken);
 
-        // 4. Suona il campanello per spedire il messaggio Kafka
+        // Suona il campanello per spedire il messaggio Kafka
         observer.NuovoPagamento.OnNext(1);
     }
 
